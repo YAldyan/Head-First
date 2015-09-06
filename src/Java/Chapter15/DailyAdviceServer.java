@@ -1,0 +1,55 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package Java.Chapter15;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+/**
+ *
+ * @author 7
+ */
+public class DailyAdviceServer
+{
+    String[] adviceList = {"Take smaller bites", "Go for the tight jeans. No they do NOT make you look fat",
+        "One word: inappropriate", "Just for today, be honest.  Tell your boss what you *really* think", 
+        "You might want to rethink that haircut"};
+        
+    public void go() {
+        try {
+            @SuppressWarnings("resource")
+			ServerSocket serverSock = new ServerSocket(4242);
+            while (true)
+            {
+                Socket sock = serverSock.accept();
+                
+                String advice;
+                try (PrintWriter writer = new PrintWriter(sock.getOutputStream())) {
+                    advice = getAdvice();
+                    writer.println(advice);
+                }
+                System.out.println(advice);
+            }
+        } catch (IOException ex)
+        {}
+    }
+    
+    private String getAdvice() {
+        int random = (int) (Math.random() * adviceList.length);
+        return adviceList[random];
+    }
+    
+    public static void main(String[] args)
+    {
+        DailyAdviceServer server = new DailyAdviceServer();
+        server.go();
+    }
+
+}
+
